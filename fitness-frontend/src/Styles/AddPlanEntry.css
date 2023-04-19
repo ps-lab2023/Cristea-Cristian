@@ -1,0 +1,132 @@
+#add-plan-entry-container {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    background-color: var(--white-one);
+    padding: 10px;
+    padding-left: 50px;
+    width: 500px;
+    border-radius: 10px;
+}
+
+.add-entry-label {
+    font-family: 'Oxygen', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--green-two);
+}
+
+.add-entry-input {
+    border: none;
+    background-color: var(--white-one);
+    border-bottom: 2px solid var(--white-two);
+    outline: none;
+    padding-bottom: 0px;
+    font-family: 'Oxygen';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 15px;
+    transition: border-color 0.5s ease-out;
+    width: 241px;
+    text-align: center;
+}
+
+.add-entry-input:focus{
+    border-bottom: 2px solid var(--green-two);
+}
+
+#name-of-exercise-container{
+    display: flex;
+    flex-direction: row;
+    gap: 146px;
+}
+
+#no-of-sets{
+    display: flex;
+    flex-direction: row;
+    gap: 84px;
+}
+
+#sets-input, #no-of-reps-input, #rest-input{
+    text-align: center;
+}
+
+#duration-container{
+    display: flex;
+    flex-direction: row;
+    gap: 75px;
+}
+
+#duration-inputs-container{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+#hour-input, #minute-input, #sec-input{
+    width: 75px;
+    text-align: center;
+}
+
+#no-of-reps-container{
+    display: flex;
+    flex-direction: row;
+    gap: 60px;
+}
+
+#rest-container{
+    display: flex;
+    flex-direction: row;
+    gap: 61px;
+}
+
+#overview-entry-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: var(--white-one);
+    padding: 7px;
+    padding-left: 50px;
+    padding-right: 10px;
+    width: 500px;
+    border-radius: 10px;
+}
+
+.plan-entry-info{
+    font-family: 'Oxygen', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--gray-one);
+    margin: 0;
+}
+
+#name-icon-container{
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+}
+
+.add-plan-entry-icon{
+    margin-top: 2px;
+    margin-right: 7px;
+}
+
+#description-entry-container{
+    display: flex;
+    flex-direction: row;
+    gap: 108px;
+}
+
+#save-icon{
+    width: 20px;
+    height: 20px;
+    margin-left: 20px;
+}
+
+#trash-icon {
+    width: 20px;
+    height: 20px;
+    margin-left: 440px;
+}

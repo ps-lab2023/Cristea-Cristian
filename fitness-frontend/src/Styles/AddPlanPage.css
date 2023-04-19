@@ -1,0 +1,27 @@
+.add-plan-details-page-main-container {
+    background: linear-gradient(180deg, #5C6B73 0%, rgba(138, 140, 135, 0.578) 50%, rgba(100, 101, 99, 0.6) 100%);
+    min-height: 100vh;
+    background-attachment: fixed;
+    margin: 0;
+    position: relative;
+}
+
+#back-btn{
+    position: absolute;
+    background: url('../Icons/left.png');
+    background-repeat: no-repeat;
+    width: 40px;
+    height: 40px;
+    top:90%;
+    margin-left: 50px;
+}
+
+#next-btn{
+    position: absolute;
+    background: url('../Icons/right.png');
+    background-repeat: no-repeat;
+    width: 45px;
+    height: 45px;
+    top:90%;
+    right: 5%;
+}

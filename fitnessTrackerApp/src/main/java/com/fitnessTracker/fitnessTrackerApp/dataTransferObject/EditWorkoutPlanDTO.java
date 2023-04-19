@@ -13,8 +13,9 @@ import lombok.NoArgsConstructor;
 @Data
 public class EditWorkoutPlanDTO {
     private long id;
+    private String name;
+    private String goal;
     private ActivityTypeEnum mainActivity;
     private LevelEnum level;
     private String description;
-    private DurationDTO duration;
 }

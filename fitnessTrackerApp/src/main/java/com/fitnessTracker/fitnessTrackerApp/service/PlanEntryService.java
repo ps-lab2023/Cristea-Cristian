@@ -4,6 +4,8 @@ import com.fitnessTracker.fitnessTrackerApp.dataTransferObject.AddPlanEntryDTO;
 import com.fitnessTracker.fitnessTrackerApp.dataTransferObject.EditPlanEntryDTO;
 import com.fitnessTracker.fitnessTrackerApp.dataTransferObject.PlanEntryDTO;
 
+import java.util.List;
+
 public interface PlanEntryService {
     PlanEntryDTO getPlanEntryById(long id);
     PlanEntryDTO addPlanEntry(AddPlanEntryDTO addPlanEntry);

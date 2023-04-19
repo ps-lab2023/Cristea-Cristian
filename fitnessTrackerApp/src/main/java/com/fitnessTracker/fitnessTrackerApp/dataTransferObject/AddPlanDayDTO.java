@@ -12,5 +12,4 @@ import lombok.NoArgsConstructor;
 public class AddPlanDayDTO {
     private long planId;
     private int dayNumber;
-    private boolean isRestDay;
 }

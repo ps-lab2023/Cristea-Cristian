@@ -1,9 +1,10 @@
 package com.fitnessTracker.fitnessTrackerApp.service.impl;
 
-import com.fitnessTracker.fitnessTrackerApp.dataTransferObject.AddWorkoutRecordDTO;
-import com.fitnessTracker.fitnessTrackerApp.dataTransferObject.EditWorkoutRecordDTO;
-import com.fitnessTracker.fitnessTrackerApp.dataTransferObject.WorkoutRecordDTO;
+import com.fitnessTracker.fitnessTrackerApp.dataTransferObject.*;
+import com.fitnessTracker.fitnessTrackerApp.enums.ActivityTypeEnum;
 import com.fitnessTracker.fitnessTrackerApp.enums.UserRoleEnum;
+import com.fitnessTracker.fitnessTrackerApp.exceptions.UserNotFoundException;
+import com.fitnessTracker.fitnessTrackerApp.exceptions.WorkoutRecordNotFoundException;
 import com.fitnessTracker.fitnessTrackerApp.model.User;
 import com.fitnessTracker.fitnessTrackerApp.model.WorkoutRecord;
 import com.fitnessTracker.fitnessTrackerApp.repository.UserRepository;
@@ -16,7 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.YearMonth;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class WorkoutRecordServiceImpl implements WorkoutRecordService {
@@ -38,7 +44,7 @@ public class WorkoutRecordServiceImpl implements WorkoutRecordService {
     public WorkoutRecordDTO getWorkoutRecordById(long id) {
         WorkoutRecord workoutRecord= workoutRecordRepository.findById(id).orElse(null);
         if(workoutRecord == null) {
-            return null;
+            throw new WorkoutRecordNotFoundException("Workout record with id " + id + " not found");
         }
         return modelMapper.map(workoutRecord, WorkoutRecordDTO.class);
     }
@@ -48,7 +54,7 @@ public class WorkoutRecordServiceImpl implements WorkoutRecordService {
     public List<WorkoutRecordDTO> getWorkoutRecordsByUserId(long userId) {
         User user = userRepository.findById(userId).orElse(null);
         if(user == null || user.getRole() != UserRoleEnum.USER) {
-            return null;
+            throw new UserNotFoundException("User with id " + userId +" not found");
         }
         List<WorkoutRecord> workoutRecords = user.getWorkoutRecords();
         Hibernate.initialize(workoutRecords);
@@ -62,7 +68,7 @@ public class WorkoutRecordServiceImpl implements WorkoutRecordService {
     public WorkoutRecordDTO addWorkoutRecord(AddWorkoutRecordDTO addWorkoutRecord) {
         User user = userRepository.findById(addWorkoutRecord.getUserId()).orElse(null);
         if(user == null || user.getRole() != UserRoleEnum.USER) {
-            return null;
+            throw new UserNotFoundException("User with id " + addWorkoutRecord.getUserId() +" not found");
         }
         WorkoutRecord workoutRecord = WorkoutRecord.builder()
                 .activityType(addWorkoutRecord.getActivityType())
@@ -87,7 +93,7 @@ public class WorkoutRecordServiceImpl implements WorkoutRecordService {
     public WorkoutRecordDTO updateWorkoutRecord(EditWorkoutRecordDTO editWorkoutRecord) {
         WorkoutRecord workoutRecord = workoutRecordRepository.findById(editWorkoutRecord.getId()).orElse(null);
         if(workoutRecord == null) {
-            return null;
+            throw new WorkoutRecordNotFoundException("Workout record with id " + editWorkoutRecord.getId() + " not found");
         }
         workoutRecord.setActivityType(editWorkoutRecord.getActivityType());
         workoutRecord.setDistance(editWorkoutRecord.getDistance());
@@ -97,5 +103,68 @@ public class WorkoutRecordServiceImpl implements WorkoutRecordService {
         workoutRecord.setCalories(editWorkoutRecord.getCalories());
         workoutRecordRepository.save(workoutRecord);
         return modelMapper.map(workoutRecord, WorkoutRecordDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public UserWorkoutRecordsDTO getWorkoutRecordsByUser(long userId) {
+        Map<YearMonth, List<WorkoutRecordDTO>> monthWorkoutRecords = this.getWorkoutRecordsByUserId(userId).stream()
+                .sorted(Comparator.comparing(WorkoutRecordDTO::getDate).reversed())
+                .collect(Collectors.groupingBy(record -> YearMonth.of(record.getDate().getYear(),
+                        record.getDate().getMonth()), LinkedHashMap::new, Collectors.toList()));
+
+        List<MonthSummaryDTO> monthSummaries = monthWorkoutRecords.entrySet().stream()
+                .map(e ->
+                {
+                    List<WorkoutRecordDTO> workoutRecordsList = e.getValue();
+                    return MonthSummaryDTO.builder()
+                            .month(e.getKey().getMonth().getValue())
+                            .year(e.getKey().getYear())
+                            .totalDistance(workoutRecordsList.stream().mapToDouble(WorkoutRecordDTO::getDistance).sum())
+                            .totalTime(workoutRecordsList.stream().mapToDouble(w -> w.getDuration().toSecondOfDay()/60.0).sum())
+                            .numberOfTimes(workoutRecordsList.size())
+                            .calories(workoutRecordsList.stream().mapToInt(WorkoutRecordDTO::getCalories).sum())
+                            .workoutRecords(workoutRecordsList)
+                            .build();
+                }).toList();
+
+        return UserWorkoutRecordsDTO.builder()
+                .duration(monthSummaries.stream().mapToDouble(MonthSummaryDTO::getTotalTime).sum()/60.0)
+                .numberOfSessions(monthSummaries.stream().mapToInt(MonthSummaryDTO::getNumberOfTimes).sum())
+                .calories(monthSummaries.stream().mapToInt(MonthSummaryDTO::getCalories).sum())
+                .monthSummaries(monthSummaries)
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public UserWorkoutRecordsDTO filterWorkoutRecordsByActivityType(long userId, ActivityTypeEnum activityType) {
+        Map<YearMonth, List<WorkoutRecordDTO>> monthWorkoutRecords = this.getWorkoutRecordsByUserId(userId).stream()
+                .filter(w -> w.getActivityType().equals(activityType))
+                .sorted(Comparator.comparing(WorkoutRecordDTO::getDate).reversed())
+                .collect(Collectors.groupingBy(record -> YearMonth.of(record.getDate().getYear(),
+                        record.getDate().getMonth()), LinkedHashMap::new, Collectors.toList()));
+
+        List<MonthSummaryDTO> monthSummaries = monthWorkoutRecords.entrySet().stream()
+                .map(e ->
+                {
+                    List<WorkoutRecordDTO> workoutRecordsList = e.getValue();
+                    return MonthSummaryDTO.builder()
+                            .month(e.getKey().getMonth().getValue())
+                            .year(e.getKey().getYear())
+                            .totalDistance(workoutRecordsList.stream().mapToDouble(WorkoutRecordDTO::getDistance).sum())
+                            .totalTime(workoutRecordsList.stream().mapToDouble(w -> w.getDuration().toSecondOfDay()/60.0).sum())
+                            .numberOfTimes(workoutRecordsList.size())
+                            .calories(workoutRecordsList.stream().mapToInt(WorkoutRecordDTO::getCalories).sum())
+                            .workoutRecords(workoutRecordsList)
+                            .build();
+                }).toList();
+
+        return UserWorkoutRecordsDTO.builder()
+                .duration(monthSummaries.stream().mapToDouble(MonthSummaryDTO::getTotalTime).sum()/60.0)
+                .numberOfSessions(monthSummaries.stream().mapToInt(MonthSummaryDTO::getNumberOfTimes).sum())
+                .calories(monthSummaries.stream().mapToInt(MonthSummaryDTO::getCalories).sum())
+                .monthSummaries(monthSummaries)
+                .build();
     }
 }

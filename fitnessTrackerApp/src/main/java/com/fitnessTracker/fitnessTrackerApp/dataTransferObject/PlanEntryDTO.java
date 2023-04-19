@@ -19,4 +19,6 @@ public class PlanEntryDTO {
     private LocalTime duration;
     private int noOfReps;
     private String description;
+    private int restBetween;
+    private int noOfSets;
 }

@@ -1,9 +1,11 @@
 package com.fitnessTracker.fitnessTrackerApp.service.impl;
 
-import com.fitnessTracker.fitnessTrackerApp.dataTransferObject.AddUserDTO;
-import com.fitnessTracker.fitnessTrackerApp.dataTransferObject.EditUserDTO;
-import com.fitnessTracker.fitnessTrackerApp.dataTransferObject.UserDTO;
+import com.fitnessTracker.fitnessTrackerApp.dataTransferObject.*;
+import com.fitnessTracker.fitnessTrackerApp.util.PasswordHasher;
+import com.fitnessTracker.fitnessTrackerApp.util.Utils;
 import com.fitnessTracker.fitnessTrackerApp.enums.UserRoleEnum;
+import com.fitnessTracker.fitnessTrackerApp.exceptions.AddUserException;
+import com.fitnessTracker.fitnessTrackerApp.exceptions.UserNotFoundException;
 import com.fitnessTracker.fitnessTrackerApp.model.User;
 import com.fitnessTracker.fitnessTrackerApp.repository.UserRepository;
 import com.fitnessTracker.fitnessTrackerApp.service.UserService;
@@ -28,12 +30,34 @@ public class UserServiceImpl implements UserService {
         List<User> existingUsers = userRepository.findAll();
         for(User user: existingUsers){
             if(user.getUsername().equals(newUser.getUsername())) {
-                return null;
+                throw new AddUserException("Invalid username");
             }
         }
+        String hashedPassword = PasswordHasher.hashPassword(newUser.getPassword());
         User user = modelMapper.map(newUser, User.class);
+        user.setPassword(hashedPassword);
         userRepository.save(user);
         return modelMapper.map(user, UserDTO.class);
+    }
+
+    @Override
+    public UserDTO addTrainer(AddTrainerDTO newTrainer) {
+        List<User> existingUsers = userRepository.findAll();
+        for(User user: existingUsers){
+            if(user.getUsername().equals(newTrainer.getUsername())) {
+                throw new AddUserException("Invalid username");
+            }
+        }
+        String password = Utils.generatePassword(10);
+        String hashedPassword = PasswordHasher.hashPassword(password);
+        User user = modelMapper.map(newTrainer, User.class);
+        user.setRole(UserRoleEnum.TRAINER);
+        user.setPassword(hashedPassword);
+        user.setChangedPassword(false);
+        userRepository.save(user);
+        UserDTO mappedUser = modelMapper.map(user, UserDTO.class);
+        mappedUser.setPassword(password);
+        return mappedUser;
     }
 
     @Override
@@ -57,9 +81,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO logIn(String username, String password) {
-        User user = userRepository.findUserByUsernameAndPassword(username, password);
+        String hashedPassword = PasswordHasher.hashPassword(password);
+        User user = userRepository.findUserByUsernameAndPassword(username, hashedPassword);
         if(user == null) {
-            return null;
+            throw new UserNotFoundException("Invalid credentials");
         }
         return modelMapper.map(user, UserDTO.class);
     }
@@ -87,5 +112,17 @@ public class UserServiceImpl implements UserService {
                 filter(u -> u.getRole() == UserRoleEnum.TRAINER)
                 .map(u -> modelMapper.map(u, UserDTO.class))
                 .toList();
+    }
+
+    @Override
+    public void changePassword(ChangePasswordDTO changePassword) {
+        User user = userRepository.findById(changePassword.getUserId()).orElse(null);
+        if(user == null) {
+            throw new UserNotFoundException("User with id " + changePassword.getUserId() + " not found");
+        }
+        String hashedPassword = PasswordHasher.hashPassword(changePassword.getPassword());
+        user.setPassword(hashedPassword);
+        user.setChangedPassword(true);
+        userRepository.save(user);
     }
 }

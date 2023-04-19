@@ -1,0 +1,122 @@
+#form-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#plan-name-container {
+    display: flex;
+    flex-direction: row;
+    align-items:self-end;
+    margin-bottom: 20px;
+    gap: 50px;
+}
+
+.plan-label {
+    font-family: 'Oxygen';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 23px;
+    line-height: 32px;
+    color: var(--green-two);
+}
+
+.plan-input {
+    font-family: 'Oxygen';
+    background-color: var(--white-one);
+    border-radius: 10px;
+    width: 300px;
+    border: none;
+    border-width: 0;
+    border: 0;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-left: 15px;
+    font-size: 17px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.plan-input:focus {
+    outline: none;
+}
+
+#main-activity-container{
+    display: flex;
+    flex-direction: row;
+    align-items: self-end;
+    gap: 24px;
+    margin-bottom: 20px;
+}
+
+.select-container{
+    font-family: 'Oxygen', serif;
+    background-color: var(--white-one);
+    border-radius: 10px;
+    width: 300px;
+    border: 0 none;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 15px;
+    font-size: 17px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.select-container:focus{
+    outline: none;
+}
+
+#level-container{
+    display: flex;
+    flex-direction: row;
+    align-items: self-end;
+    gap: 95px;
+    margin-bottom: 20px;
+}
+
+#goal-container{
+    display: flex;
+    flex-direction: row;
+    align-items: self-end;
+    gap: 101px;
+    margin-bottom: 20px;
+}
+
+#description-container {
+    display: flex;
+    flex-direction: row;
+    gap: 39px;
+}
+
+#description-area {
+    font-family: 'Oxygen';
+    background-color: var(--white-one);
+    border-radius: 10px;
+    width: 300px;
+    border: none;
+    border-width: 0;
+    border: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 15px;
+    font-size: 17px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+#description-area:focus{
+    outline: none;
+}
+
+#plan-name-error-message{
+    color: rgba(255, 0, 0, 0.5);
+    font-family: 'Oxygen';
+    font-size: 17px;
+    font-weight: 500;
+    margin-left: 145px;
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+#no-plane-name-error-message {
+    height: 30px;
+}

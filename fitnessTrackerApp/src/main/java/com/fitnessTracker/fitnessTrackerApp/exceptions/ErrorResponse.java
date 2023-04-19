@@ -1,17 +1,15 @@
 package com.fitnessTracker.fitnessTrackerApp.exceptions;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
-@NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class ErrorReponse {
+@Data
+public class ErrorResponse {
     private final String guid;
-    private final String errorCode;
     private final String message;
     private final Integer statusCode;
     private final String statusName;

@@ -1,0 +1,41 @@
+.home-page-main-container {
+    background: linear-gradient(180deg, #5C6B73 0%, rgba(216, 218, 211, 0.578125) 50%, rgba(241, 242, 235, 0.6) 100%);
+    min-height: 100vh;
+    background-attachment: fixed;
+    margin: 0;
+}
+
+.main-page-center-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.overview-categories-container {
+    padding-left: 43px;
+}
+
+.overview-categories-container > * + * {
+    margin-top: 10px;
+}
+
+.add-record-container {
+    margin-left: 45px;
+}
+
+.workout-records-home {
+    padding-right: 44px;
+    padding-bottom: 50px;
+    overflow-x: auto;
+    height: 600px;
+}
+
+.filter-title{
+    font-family: 'Oxygen';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 30px;
+    color: var(--green-two);
+    margin-top: 30px;
+    margin-bottom: 0px;
+}

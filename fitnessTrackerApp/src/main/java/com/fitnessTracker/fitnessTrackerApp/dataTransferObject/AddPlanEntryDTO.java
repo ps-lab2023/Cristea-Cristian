@@ -16,4 +16,6 @@ public class AddPlanEntryDTO {
     private DurationDTO duration;
     private int noOfReps;
     private String description;
+    private int restBetween;
+    private int noOfSets;
 }

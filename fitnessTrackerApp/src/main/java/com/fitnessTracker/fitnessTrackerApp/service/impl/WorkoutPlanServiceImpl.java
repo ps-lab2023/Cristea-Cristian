@@ -1,9 +1,10 @@
 package com.fitnessTracker.fitnessTrackerApp.service.impl;
 
-import com.fitnessTracker.fitnessTrackerApp.dataTransferObject.AddWorkoutPlanDTO;
-import com.fitnessTracker.fitnessTrackerApp.dataTransferObject.EditWorkoutPlanDTO;
-import com.fitnessTracker.fitnessTrackerApp.dataTransferObject.WorkoutPlanDTO;
+import com.fitnessTracker.fitnessTrackerApp.dataTransferObject.*;
 import com.fitnessTracker.fitnessTrackerApp.enums.UserRoleEnum;
+import com.fitnessTracker.fitnessTrackerApp.exceptions.UserNotFoundException;
+import com.fitnessTracker.fitnessTrackerApp.exceptions.WorkoutPlanNotFoundException;
+import com.fitnessTracker.fitnessTrackerApp.model.PlanDay;
 import com.fitnessTracker.fitnessTrackerApp.model.User;
 import com.fitnessTracker.fitnessTrackerApp.model.WorkoutPlan;
 import com.fitnessTracker.fitnessTrackerApp.repository.UserRepository;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -37,16 +40,15 @@ public class WorkoutPlanServiceImpl implements WorkoutPlanService {
     public WorkoutPlanDTO addWorkoutPlan(AddWorkoutPlanDTO newPlan) {
         User owner = userRepository.findById(newPlan.getTrainerId()).orElse(null);
         if(owner == null || owner.getRole() != UserRoleEnum.TRAINER) {
-            return null;
+            throw new UserNotFoundException("Trainer with id " + newPlan.getTrainerId() + " not found");
         }
         WorkoutPlan workoutPlan = WorkoutPlan.builder()
                 .trainer(owner)
+                .name(newPlan.getName())
                 .mainActivity(newPlan.getMainActivity())
                 .description(newPlan.getDescription())
                 .level(newPlan.getLevel())
-                .duration(LocalTime.of(newPlan.getDuration().getHours(),
-                        newPlan.getDuration().getMinutes(),
-                        newPlan.getDuration().getSeconds()))
+                .goal(newPlan.getGoal())
                 .build();
         workoutPlanRepository.save(workoutPlan);
 
@@ -54,27 +56,34 @@ public class WorkoutPlanServiceImpl implements WorkoutPlanService {
     }
 
     @Override
-    public WorkoutPlanDTO getWorkoutPlanById(long id) {
+    public WorkoutPlanSummaryDTO getWorkoutPlanById(long id) {
         WorkoutPlan workoutPlan = workoutPlanRepository.findById(id).orElse(null);
         if(workoutPlan == null) {
-            return null;
+            throw new WorkoutPlanNotFoundException("Workout plan with id " + id + " not found");
         }
-        return modelMapper.map(workoutPlan, WorkoutPlanDTO.class);
+        WorkoutPlanSummaryDTO mappedPlan = modelMapper.map(workoutPlan, WorkoutPlanSummaryDTO.class);
+        mappedPlan.setNoOfDays(workoutPlan.getPlanDays().size());
+        return mappedPlan;
     }
 
     @Override
     @Transactional
-    public List<WorkoutPlanDTO> getWorkoutPlansByTrainerId(long trainerId) {
+    public List<WorkoutPlanSummaryDTO> getWorkoutPlansByTrainerId(long trainerId) {
         User user = userRepository.findById(trainerId).orElse(null);
         if(user == null || user.getRole() != UserRoleEnum.TRAINER) {
-            return null;
+            throw new UserNotFoundException("Trainer with id " + trainerId + " not found");
         }
         List<WorkoutPlan> workoutPlans = user.getWorkoutPlans();
         Hibernate.initialize(workoutPlans);
         if(workoutPlans == null) {
             return null;
         }
-        return workoutPlans.stream().map(w -> modelMapper.map(w, WorkoutPlanDTO.class)).toList();
+        return workoutPlans.stream().map(w ->
+        {
+            WorkoutPlanSummaryDTO mappedPlan = modelMapper.map(w, WorkoutPlanSummaryDTO.class);
+            mappedPlan.setNoOfDays(w.getPlanDays().size());
+            return mappedPlan;
+        }).toList();
     }
 
     @Override
@@ -86,15 +95,34 @@ public class WorkoutPlanServiceImpl implements WorkoutPlanService {
     public WorkoutPlanDTO updateWorkoutPlan(EditWorkoutPlanDTO editWorkoutPlanDTO) {
         WorkoutPlan oldWorkoutPlan = workoutPlanRepository.findById(editWorkoutPlanDTO.getId()).orElse(null);
         if(oldWorkoutPlan == null) {
-            return null;
+            throw new WorkoutPlanNotFoundException("Workout plan with id " + editWorkoutPlanDTO.getId() + " not found");
         }
+        oldWorkoutPlan.setName(editWorkoutPlanDTO.getName());
         oldWorkoutPlan.setMainActivity(editWorkoutPlanDTO.getMainActivity());
         oldWorkoutPlan.setDescription(editWorkoutPlanDTO.getDescription());
-        oldWorkoutPlan.setDuration(LocalTime.of(editWorkoutPlanDTO.getDuration().getHours(),
-                editWorkoutPlanDTO.getDuration().getMinutes(),
-                editWorkoutPlanDTO.getDuration().getSeconds()));
         oldWorkoutPlan.setLevel(editWorkoutPlanDTO.getLevel());
+        oldWorkoutPlan.setGoal(editWorkoutPlanDTO.getGoal());
         workoutPlanRepository.save(oldWorkoutPlan);
         return modelMapper.map(oldWorkoutPlan, WorkoutPlanDTO.class);
+    }
+
+    @Override
+    public List<PlanDaySummaryDTO> getWorkoutPlanDays(long id) {
+        WorkoutPlan workoutPlan = workoutPlanRepository.findById(id).orElse(null);
+        if(workoutPlan == null) {
+            throw new WorkoutPlanNotFoundException("Workout plan with id " + id + " not found");
+        }
+        List<PlanDaySummaryDTO> planDaySummaryList = new ArrayList<>();
+        for(PlanDay planDay: workoutPlan.getPlanDays()) {
+            PlanDaySummaryDTO planDaySummary = PlanDaySummaryDTO.builder()
+                    .id(planDay.getId())
+                    .dayNumber(planDay.getDayNumber())
+                    .noOfEntries(planDay.getPlanEntries().size())
+                    .build();
+            planDaySummaryList.add(planDaySummary);
+        }
+        return planDaySummaryList.stream()
+                .sorted(Comparator.comparingInt(PlanDaySummaryDTO::getDayNumber))
+                .toList();
     }
 }

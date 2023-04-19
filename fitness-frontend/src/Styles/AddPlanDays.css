@@ -1,0 +1,21 @@
+#add-days-container{
+    display: flex;
+    flex-direction: column;
+    width: 670px;
+    gap: 5px;
+    position: absolute;
+    top: 48%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 630px;
+    overflow-y: auto;
+}
+
+#add-days-container::-webkit-scrollbar{
+    width: 15px;
+}
+#plus-icon-plan-days{
+    width: 40px;
+    height: 40px;
+    margin-left: auto;
+}

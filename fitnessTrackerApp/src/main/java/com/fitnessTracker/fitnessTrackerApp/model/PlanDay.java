@@ -22,9 +22,6 @@ public class PlanDay {
     @Column(nullable = false)
     private int dayNumber;
 
-    @Column(nullable = false)
-    private boolean isRestDay;
-
     @OneToMany(mappedBy = "planDay", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @ToString.Exclude
     private List<PlanEntry> planEntries;

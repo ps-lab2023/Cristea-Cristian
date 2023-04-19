@@ -1,0 +1,20 @@
+.trainer-plans-page-main-container {
+    background: linear-gradient(180deg, #5C6B73 0%, rgba(138, 140, 135, 0.578) 50%, rgba(100, 101, 99, 0.6) 100%);
+    min-height: 100vh;
+    background-attachment: fixed;
+    margin: 0;
+    position: relative;
+    padding-bottom: 70px;
+}
+
+#plans-pair {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+#row-container {
+    display: flex;
+    flex-direction: column;
+    gap:40px;
+}

@@ -1,17 +1,12 @@
 package com.fitnessTracker.fitnessTrackerApp.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fitnessTracker.fitnessTrackerApp.enums.GenderEnum;
 import com.fitnessTracker.fitnessTrackerApp.enums.UserRoleEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -46,6 +41,8 @@ public class User implements Serializable {
 
     @Column(nullable = false)
     private UserRoleEnum role;
+
+    private boolean changedPassword;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @ToString.Exclude

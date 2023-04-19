@@ -1,0 +1,88 @@
+.workout-record-main-container {
+    height: 45px;
+    display: flex;
+    flex-direction: row;
+    background-color: var(--green-two);
+    border-radius: 10px;
+}
+
+.workout-icon {
+    width: 17.43px;
+    height: 19px;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 16px;
+}
+
+.info-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.category-time-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-right: 10px;
+    padding-top: 3px;
+}
+
+.workout-info-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 300px;
+    padding-top: 10px;
+    padding-right: 250px;
+}
+
+.category-time-header {
+    margin: 0;
+    font: Oxygen;
+    font-weight: 350;
+    font-size: 12px;
+    color: var(--white-two);
+    text-align: end;
+    padding-top: 4px;
+}
+
+.workout-info-header {
+    font: Oxygen;
+    margin: 0;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--white);
+}
+
+.um-header {
+    font: Oxygen;
+    margin: 0;
+    font-weight: 300;
+    font-size: 15px;
+    color: var(--white);
+    margin: 0;
+}
+
+.mini-info-container {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 5px;
+}
+
+.date-icons-container
+{
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 30px;
+}
+
+.trash-icon {
+    width: 15px;
+    height: 20px;
+}

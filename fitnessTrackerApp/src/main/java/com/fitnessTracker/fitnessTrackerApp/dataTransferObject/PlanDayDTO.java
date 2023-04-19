@@ -16,6 +16,5 @@ public class PlanDayDTO {
     private long id;
     private long planId;
     private int dayNumber;
-    private boolean isRestDay;
     private List<PlanEntryDTO> planEntries;
 }

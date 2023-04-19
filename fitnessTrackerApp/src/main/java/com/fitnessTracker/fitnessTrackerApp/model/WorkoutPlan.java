@@ -23,16 +23,18 @@ public class WorkoutPlan {
     private User trainer;
 
     @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
     private ActivityTypeEnum mainActivity;
+
+    private String goal;
 
     @Column(nullable = false)
     private LevelEnum level;
 
     @Column(length = 100)
     private String description;
-
-    @Column(nullable = false)
-    private LocalTime duration;
 
     @OneToMany(mappedBy = "plan", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<PlanDay> planDays;

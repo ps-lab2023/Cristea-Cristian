@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @Data
 public class EditPlanEntryDTO {
     private long id;
-    private int orderNumber;
     private String nameOfExercise;
     private DurationDTO duration;
     private int noOfReps;
     private String description;
-
+    private int restBetween;
+    private int noOfSets;
 }

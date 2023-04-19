@@ -1,0 +1,84 @@
+#add-plan-day-container{
+    background-color: var(--white-two);
+    width: 600px;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+#day-header-container{
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+}
+
+#day-header{
+    font-family: 'Oxygen', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    margin: 0;
+    margin-bottom: 5px;
+    color: var(--green-two);
+}
+
+#is-rest-day-header{
+    font-family: 'Oxygen', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 15px;
+    margin: 0;
+    margin-left: 20px;
+    color: var(--gray-one);
+}
+
+#icon-container{
+    margin-top: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+#plus-icon{
+    width: 25px;
+    height: 25px;
+}
+
+#delete-day-icon{
+    width: 25px;
+    height: 25px;
+}
+
+#day-entries-container{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#entry-container{
+    display: flex;
+    flex-direction: row;
+    align-items:end;
+    gap: 15px;
+}
+
+#entry-container > label{
+    font-family: 'Oxygen', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 15px;
+    margin-top: auto;
+    margin-bottom: auto;
+    color: var(--green-two);
+    width: 10px;
+    text-align: right;
+}
+
+
+.arrow-icon{
+    margin-left: auto;
+    margin-right: 5px;
+    width: 15px;
+    height: 15px;
+    margin-top: auto;
+    margin-bottom: auto;
+}

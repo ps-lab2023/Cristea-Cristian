@@ -1,8 +1,8 @@
 package com.fitnessTracker.fitnessTrackerApp.service.impl;
 
-import com.fitnessTracker.fitnessTrackerApp.dataTransferObject.AddPlanDayDTO;
-import com.fitnessTracker.fitnessTrackerApp.dataTransferObject.EditPlanDayDTO;
-import com.fitnessTracker.fitnessTrackerApp.dataTransferObject.PlanDayDTO;
+import com.fitnessTracker.fitnessTrackerApp.dataTransferObject.*;
+import com.fitnessTracker.fitnessTrackerApp.exceptions.PlanDayNotFoundException;
+import com.fitnessTracker.fitnessTrackerApp.exceptions.WorkoutPlanNotFoundException;
 import com.fitnessTracker.fitnessTrackerApp.model.PlanDay;
 import com.fitnessTracker.fitnessTrackerApp.model.WorkoutPlan;
 import com.fitnessTracker.fitnessTrackerApp.repository.PlanDayRepository;
@@ -10,6 +10,9 @@ import com.fitnessTracker.fitnessTrackerApp.repository.WorkoutPlanRepository;
 import com.fitnessTracker.fitnessTrackerApp.service.PlanDayService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 public class PlanDayServiceImpl implements PlanDayService {
@@ -36,20 +39,34 @@ public class PlanDayServiceImpl implements PlanDayService {
     public PlanDayDTO addPlanDay(AddPlanDayDTO planDayDTO) {
         WorkoutPlan workoutPlan = workoutPlanRepository.findById(planDayDTO.getPlanId()).orElse(null);
         if(workoutPlan == null){
-            return null;
+            throw new WorkoutPlanNotFoundException("The plan with id " + planDayDTO.getPlanId() + " not found");
         }
         PlanDay planDay = PlanDay.builder()
                 .plan(workoutPlan)
                 .dayNumber(planDayDTO.getDayNumber())
-                .isRestDay(planDayDTO.isRestDay())
                 .build();
 
         planDayRepository.save(planDay);
         return modelMapper.map(planDay, PlanDayDTO.class);
     }
 
+    private void decreaseDayNumber(PlanDay planDay) {
+        planDay.setDayNumber(planDay.getDayNumber() - 1);
+        planDayRepository.save(planDay);
+    }
+
     @Override
     public void deletePlanDay(long id) {
+        PlanDay planDay = planDayRepository.findById(id).orElse(null);
+        if(planDay == null) {
+            throw new PlanDayNotFoundException("Plan day with id " + id + " not found");
+        }
+        List<PlanDay> workoutPlanDays = planDay.getPlan().getPlanDays();
+        for(PlanDay day: workoutPlanDays) {
+            if(day.getDayNumber() > planDay.getDayNumber()) {
+                decreaseDayNumber(day);
+            }
+        }
         planDayRepository.deleteById(id);
     }
 
@@ -60,8 +77,19 @@ public class PlanDayServiceImpl implements PlanDayService {
             return null;
         }
         planDay.setDayNumber(editPlanDay.getDayNumber());
-        planDay.setRestDay(editPlanDay.isRestDay());
         planDayRepository.save(planDay);
         return modelMapper.map(planDay, PlanDayDTO.class);
+    }
+
+    @Override
+    public List<PlanEntryDTO> getPlanDayEntries(long id) {
+        PlanDay planDay = planDayRepository.findById(id).orElse(null);
+        if(planDay == null) {
+            throw new PlanDayNotFoundException("Plan day with id " + id + " not found");
+        }
+        return planDay.getPlanEntries().stream()
+                .map(e -> modelMapper.map(e, PlanEntryDTO.class))
+                .sorted(Comparator.comparingInt(PlanEntryDTO::getOrderNumber))
+                .toList();
     }
 }

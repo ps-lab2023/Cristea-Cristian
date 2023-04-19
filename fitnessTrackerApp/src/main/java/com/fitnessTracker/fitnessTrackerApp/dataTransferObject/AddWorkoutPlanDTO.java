@@ -15,8 +15,9 @@ import java.time.LocalTime;
 @Data
 public class AddWorkoutPlanDTO {
     private long trainerId;
+    private String name;
+    private String goal;
     private ActivityTypeEnum mainActivity;
     private LevelEnum level;
     private String description;
-    private DurationDTO duration;
 }

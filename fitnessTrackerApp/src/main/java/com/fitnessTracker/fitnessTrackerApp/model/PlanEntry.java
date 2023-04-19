@@ -35,4 +35,8 @@ public class PlanEntry {
 
     @Column(length = 30)
     private String description;
+
+    private int restBetween;
+
+    private int noOfSets;
 }

@@ -22,9 +22,10 @@ import java.util.List;
 public class WorkoutPlanDTO {
     private long id;
     private long trainerId;
+    private String name;
     private ActivityTypeEnum mainActivity;
     private LevelEnum level;
     private String description;
-    private LocalTime duration;
+    private String goal;
     private List<PlanDayDTO> planDays;
 }
