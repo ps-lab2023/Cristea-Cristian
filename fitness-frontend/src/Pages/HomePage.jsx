@@ -12,6 +12,7 @@ import FilterByActivityType from '../Api/FilterByActivityType'
 import { useNavigate } from 'react-router-dom'
 import AddWorkoutRecordModal from '../Components/AddEditWorkoutRecordModal'
 import { activityTypes } from '../Utils/Constants'
+import LogOutApi from '../Api/LogOutApi'
 
 const HomePage = () => {
     const [overview, setOverview] = useState({
@@ -35,10 +36,10 @@ const HomePage = () => {
     const getWorkoutRecords = async (activityType) => {
         let response
         if (activityType === 5)
-            response = await GetWorkoutRecordsApi((JSON.parse(localStorage.getItem("user"))).id)
+            response = await GetWorkoutRecordsApi((JSON.parse(sessionStorage.getItem("user"))).id)
         else
         {
-            response = await FilterByActivityType((JSON.parse(localStorage.getItem("user"))).id, activityTypes[activityType])
+            response = await FilterByActivityType((JSON.parse(sessionStorage.getItem("user"))).id, activityTypes[activityType])
         }    
         setOverview({
             duration: response.duration.toFixed(2),
@@ -78,8 +79,9 @@ const HomePage = () => {
         return getWorkoutRecords(activityType);
     }
 
-    const logOutFunction = () => {
-        localStorage.clear()
+    const logOutFunction = async () => {
+        await LogOutApi((JSON.parse(sessionStorage.getItem("user"))).id);
+        sessionStorage.clear()
         navigate("/")
     }
 

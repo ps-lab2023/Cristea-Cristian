@@ -58,7 +58,7 @@ const AddEditWorkoutRecordModal = ({
 
     const addWorkoutRecord = async () => {
         await AddWorkoutRecordApi(
-            (JSON.parse(localStorage.getItem("user"))).id,
+            (JSON.parse(sessionStorage.getItem("user"))).id,
             formData.distance,
             formData.h,
             formData.min,

@@ -26,7 +26,9 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
             WorkoutRecordNotFoundException.class,
             PlanDayNotFoundException.class,
             WorkoutPlanNotFoundException.class,
-            PlanEntryNotFoundException.class})
+            PlanEntryNotFoundException.class,
+            UserPlanNotFoundException.class,
+            IncorrectVerificationCodeException.class})
     public ResponseEntity<?> handleBadRequestException(Exception ex, HttpServletRequest request) {
         var guid = UUID.randomUUID().toString();
         var response = new ErrorResponse(

@@ -19,17 +19,17 @@ public class PlanDayController {
     private PlanDayService planDayService;
 
     @PostMapping("/addPlanDay")
-    private ResponseEntity<PlanDayDTO> addPlanDays(@RequestBody AddPlanDayDTO addPlanDay) {
+    public ResponseEntity<PlanDayDTO> addPlanDays(@RequestBody AddPlanDayDTO addPlanDay) {
         return ResponseEntity.ok(planDayService.addPlanDay(addPlanDay));
     }
 
     @GetMapping("/getPlanDayEntries/{dayId}")
-    private ResponseEntity<List<PlanEntryDTO>> getPlanDayEntries(@PathVariable long dayId) {
+    public ResponseEntity<List<PlanEntryDTO>> getPlanDayEntries(@PathVariable long dayId) {
         return ResponseEntity.ok(planDayService.getPlanDayEntries(dayId));
     }
 
     @DeleteMapping("/deletePlanDay/{dayId}")
-    private ResponseEntity deletePlanDay(@PathVariable long dayId) {
+    public ResponseEntity deletePlanDay(@PathVariable long dayId) {
         planDayService.deletePlanDay(dayId);
         return ResponseEntity.noContent().build();
     }

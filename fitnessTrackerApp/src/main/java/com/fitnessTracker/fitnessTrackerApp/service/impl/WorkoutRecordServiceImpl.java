@@ -2,6 +2,7 @@ package com.fitnessTracker.fitnessTrackerApp.service.impl;
 
 import com.fitnessTracker.fitnessTrackerApp.dataTransferObject.*;
 import com.fitnessTracker.fitnessTrackerApp.enums.ActivityTypeEnum;
+import com.fitnessTracker.fitnessTrackerApp.enums.ReportType;
 import com.fitnessTracker.fitnessTrackerApp.enums.UserRoleEnum;
 import com.fitnessTracker.fitnessTrackerApp.exceptions.UserNotFoundException;
 import com.fitnessTracker.fitnessTrackerApp.exceptions.WorkoutRecordNotFoundException;
@@ -10,6 +11,7 @@ import com.fitnessTracker.fitnessTrackerApp.model.WorkoutRecord;
 import com.fitnessTracker.fitnessTrackerApp.repository.UserRepository;
 import com.fitnessTracker.fitnessTrackerApp.repository.WorkoutRecordRepository;
 import com.fitnessTracker.fitnessTrackerApp.service.WorkoutRecordService;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -18,10 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.YearMonth;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.format.TextStyle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -166,5 +166,37 @@ public class WorkoutRecordServiceImpl implements WorkoutRecordService {
                 .calories(monthSummaries.stream().mapToInt(MonthSummaryDTO::getCalories).sum())
                 .monthSummaries(monthSummaries)
                 .build();
+    }
+
+    private int getNumberOfDays(int month, int year) {
+        YearMonth yearMonth = YearMonth.of(year, month);
+        return yearMonth.lengthOfMonth();
+    }
+
+    @Override
+    @Transactional
+    public List<ChartDataDTO> getChartData(long userId, int month, int year, ReportType reportType) {
+        Map<Integer, Double> groupedAndSummed = new HashMap<>();
+        for(int i = 1; i <= getNumberOfDays(month, year); i++) {
+            groupedAndSummed.put(i, 0.0);
+        }
+        switch (reportType) {
+            case DISTANCE -> getWorkoutRecordsByUserId(userId).stream()
+                    .filter(w -> w.getDate().getMonth().getValue() == month && w.getDate().getYear() == year)
+                    .forEach(w -> groupedAndSummed.merge(w.getDate().getDayOfMonth(), w.getDistance(), Double::sum));
+            case CALORIES -> getWorkoutRecordsByUserId(userId).stream()
+                    .filter(w -> w.getDate().getMonth().getValue() == month && w.getDate().getYear() == year)
+                    .forEach(w -> groupedAndSummed.merge(w.getDate().getDayOfMonth(), (double) w.getCalories(), Double::sum));
+            case DURATION -> getWorkoutRecordsByUserId(userId).stream()
+                    .filter(w -> w.getDate().getMonth().getValue() == month && w.getDate().getYear() == year)
+                    .forEach(w -> groupedAndSummed.merge(w.getDate().getDayOfMonth(), w.getDuration().toSecondOfDay() / 60.0, Double::sum));
+        }
+
+        return groupedAndSummed.entrySet().stream()
+                .map(e -> ChartDataDTO.builder()
+                        .label(Integer.toString(e.getKey()))
+                        .value(e.getValue())
+                        .build())
+                .collect(Collectors.toList());
     }
 }

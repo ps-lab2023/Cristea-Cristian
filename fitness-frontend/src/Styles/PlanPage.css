@@ -1,0 +1,32 @@
+#plan-page-container {
+    background: linear-gradient(180deg, #5C6B73 0%, rgba(138, 140, 135, 0.578) 50%, rgba(100, 101, 99, 0.6) 100%);
+    min-height: 100vh;
+    position: relative;
+}
+
+#days-container{
+    display: flex;
+    flex-direction: column;
+    width: 770px;
+    gap: 5px;
+    position: absolute;
+    top: 48%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 630px;
+    overflow-y: auto;
+}
+
+#days-container::-webkit-scrollbar{
+    width: 15px;
+}
+
+#plan-page-button-container{
+    position: absolute;
+    bottom: 0;
+    width: 93%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 50px;
+}

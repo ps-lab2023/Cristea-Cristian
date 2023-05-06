@@ -44,6 +44,8 @@ public class User implements Serializable {
 
     private boolean changedPassword;
 
+    private boolean isLoggedIn;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @ToString.Exclude
     private List<WorkoutRecord> workoutRecords;
@@ -55,4 +57,8 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "trainer", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @ToString.Exclude
     private List<WorkoutPlan> workoutPlans;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @ToString.Exclude
+    private VerificationCode verificationCode;
 }

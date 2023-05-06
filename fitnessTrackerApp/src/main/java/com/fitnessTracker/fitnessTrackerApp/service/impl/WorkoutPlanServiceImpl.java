@@ -6,7 +6,9 @@ import com.fitnessTracker.fitnessTrackerApp.exceptions.UserNotFoundException;
 import com.fitnessTracker.fitnessTrackerApp.exceptions.WorkoutPlanNotFoundException;
 import com.fitnessTracker.fitnessTrackerApp.model.PlanDay;
 import com.fitnessTracker.fitnessTrackerApp.model.User;
+import com.fitnessTracker.fitnessTrackerApp.model.UserPlan;
 import com.fitnessTracker.fitnessTrackerApp.model.WorkoutPlan;
+import com.fitnessTracker.fitnessTrackerApp.repository.UserPlanRepository;
 import com.fitnessTracker.fitnessTrackerApp.repository.UserRepository;
 import com.fitnessTracker.fitnessTrackerApp.repository.WorkoutPlanRepository;
 import com.fitnessTracker.fitnessTrackerApp.service.WorkoutPlanService;
@@ -25,6 +27,7 @@ public class WorkoutPlanServiceImpl implements WorkoutPlanService {
     private final WorkoutPlanRepository workoutPlanRepository;
 
     private final UserRepository userRepository;
+
 
     private final ModelMapper modelMapper;
 
@@ -124,5 +127,35 @@ public class WorkoutPlanServiceImpl implements WorkoutPlanService {
         return planDaySummaryList.stream()
                 .sorted(Comparator.comparingInt(PlanDaySummaryDTO::getDayNumber))
                 .toList();
+    }
+
+    @Override
+    public List<WorkoutPlanWithTrainerDTO> getNewWorkoutPlans(long userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if(user == null) {
+            throw new UserNotFoundException("User with id " + userId + " not found");
+        }
+        List<Long> usePlansIds = user.getUserPlans().stream()
+                .map(up -> up.getPlan().getId())
+                .toList();
+
+        return workoutPlanRepository.findAll().stream()
+                .filter(w -> !usePlansIds.contains(w.getId()))
+                .map(w -> {
+                    WorkoutPlanWithTrainerDTO mappedPlan= modelMapper.map(w, WorkoutPlanWithTrainerDTO.class);
+                    mappedPlan.setTrainerName(w.getTrainer().getName());
+                    mappedPlan.setNoOfDays(w.getPlanDays().size());
+                    return mappedPlan;
+                })
+                .toList();
+    }
+
+    @Override
+    public WorkoutPlanDTO getWorkoutPlan(long id) {
+        WorkoutPlan workoutPlan = workoutPlanRepository.findById(id).orElse(null);
+        if(workoutPlan == null) {
+            throw new WorkoutPlanNotFoundException("Workout plan with id " + id + " not found");
+        }
+        return modelMapper.map(workoutPlan, WorkoutPlanDTO.class);
     }
 }

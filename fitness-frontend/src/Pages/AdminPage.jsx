@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import LogOutApi from '../Api/LogOutApi';
 import LeftSidePhoto from '../Components/LeftSidePhoto';
 import Input from '../Components/Input';
 import Button from '../Components/Button';
 import '../Styles/AdminPage.css'
 import AddTrainerApi from '../Api/AddTrainerApi';
 import ConfirmationMessageModal from '../Components/ConfirmationMessageModal';
+import UsersTable from '../Components/UsersTable';
 
 const AdminPage = () => {   
     const [formData, setFormData] = useState({
@@ -25,6 +27,7 @@ const AdminPage = () => {
     const [emptyEmailError, setEmptyEmailError] = useState(false);
     const [emptyFullNameError, setEmptyFullNameError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [isTableOpen, setTableOpen] = useState(false);
 
     const validateFormData = () => {
         setEmptyUsernameError(false);
@@ -88,6 +91,14 @@ const AdminPage = () => {
         window.location.reload()
     }
 
+    const navigate = useNavigate();
+
+    const logOutFunction = async () => {
+        await LogOutApi((JSON.parse(sessionStorage.getItem("user"))).id);
+        sessionStorage.clear()
+        navigate("/")
+    }
+
     return (
         <div className='login-main-container'>
             <ConfirmationMessageModal
@@ -96,6 +107,10 @@ const AdminPage = () => {
                 setOpen={setModalOpen}
                 buttonText='Ok'
                 buttonFunction={() => refreshPage()}
+            />
+            <UsersTable
+                isOpen={isTableOpen}
+                setOpen={setTableOpen}
             />
             <LeftSidePhoto />
             <div className='right-side-register'>
@@ -156,10 +171,20 @@ const AdminPage = () => {
                     />
                     {errorMessage ? <p className='error-message'>{errorMessage}</p> : <div className='no-error-message'> </div>}
                 </div>
-                <div className='add-trainer-button'>
+                <div className='add-trainer-button-container'>
                     <Button
                         text='Add trainer'
                         onClickFunction={addTrainerFunction}
+                    />
+                </div>
+                <div className='admin-page-buttons'>
+                    <Button
+                        text='Log out'
+                        onClickFunction={() => logOutFunction()}
+                    />
+                    <Button
+                        text='Log in activity'
+                        onClickFunction={() => setTableOpen(true)}
                     />
                 </div>
             </div>

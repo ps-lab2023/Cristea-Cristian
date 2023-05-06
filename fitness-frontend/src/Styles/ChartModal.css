@@ -1,0 +1,39 @@
+#raport-navbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: fit-content;
+}
+
+#raport-navbar ul {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+#raport-navbar li {
+    display: inline-block;
+}
+
+#raport-navbar  li button {
+    display: block;
+    border: none;
+    color: var(--green-two);
+    background-color: transparent;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-family: 'Oxygen';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 20px;
+    border-radius: 10px;
+}
+
+#go-back-icon{
+    position: absolute;
+    margin-left: 90%;
+    width: 25px;
+    height: 25px;
+}

@@ -63,11 +63,13 @@ const LoginPage = () => {
                 setEmptyPasswordError(true);
                 setErrorMessage("Invalid credentials!")
             } else {
-                localStorage.setItem("user", JSON.stringify(
+                sessionStorage.setItem("user", JSON.stringify(
                     {
                         id: response.id,
-                        username: response.username
+                        username: response.username,
+                        role: response.role
                     }))
+                console.log(response)
                 if(response.role === 'USER') {
                     navigate('/home')
                 } else if(response.role === 'TRAINER') {
@@ -108,6 +110,7 @@ const LoginPage = () => {
                         emptyFieldError={emptyPasswordError}
                     />
                     {errorMessage ? <p className='error-message'>{errorMessage}</p> : <div className='no-error-message'> </div>}
+                    <h1 id='forgot-password-header' onClick={() => navigate('/send-email')}>Forgot password?</h1>
                 </div>
                 <div className='buttons-container'>
                     <Button

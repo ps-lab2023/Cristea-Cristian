@@ -18,7 +18,7 @@
 .buttons-container {
     margin: 50px;
     margin-bottom: 0px;
-    margin-top: 250px;
+    margin-top: 230px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -32,4 +32,16 @@
 
 .no-error-message {
     height: 18.4px;
+}
+
+#forgot-password-header{
+    font-family: 'Oxygen';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    margin: 0;
+    margin-left: 270px;
+    color: #FFFFFF;
+    text-decoration: underline;
+    cursor: pointer;
 }

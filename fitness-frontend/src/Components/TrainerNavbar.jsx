@@ -1,18 +1,37 @@
 import React from 'react'
 import '../Styles/Navbar.css'
 import { useNavigate } from 'react-router-dom'
+import LogOutApi from '../Api/LogOutApi'
+import ChatRoom from './ChatRoom';
+import { useState } from 'react';
 
 const TrainerNavbar = ({
-    logOutFunction,
-    newPlanFunction
 }) => {
+    const navigate = useNavigate();
+    const [isChatRoomOpen, setChatRoomOpen] = useState(false)
+
+    const newPlanFunction = () => {
+        navigate("/add-plan")
+    }
+
+    const logOutFunction = async () => {
+        await LogOutApi((JSON.parse(sessionStorage.getItem("user"))).id);
+        sessionStorage.clear()
+        navigate("/")
+    }
+
     return (
         <nav className='navbar-container'>
+            <ChatRoom
+                isOpen={isChatRoomOpen}
+                setOpen={setChatRoomOpen}
+            />
             <h1 className='app-name'>FitnessTracker</h1>
             <ul className='user-container'>
-                <li><a onClick={newPlanFunction}>Add a plan</a></li>
-                <li><a href='/trainer-plans'>My plans</a></li>
-                <li><a onClick={logOutFunction}>Log out</a></li>
+                <li><button onClick={() => setChatRoomOpen(true)}>Chat room</button></li>
+                <li><button onClick={newPlanFunction}>Add a plan</button></li>
+                <li><button href='/trainer-plans'>My plans</button></li>
+                <li><button onClick={logOutFunction}>Log out</button></li>
             </ul>
         </nav>
     )

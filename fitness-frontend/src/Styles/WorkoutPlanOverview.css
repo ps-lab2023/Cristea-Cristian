@@ -49,4 +49,42 @@
     flex-direction: row;
     justify-content: flex-end;
     width: 540px; 
+
+}
+
+#trainer-span {
+    font-weight: 400;
+    font-size: 20px;
+    text-shadow: none;
+    color: var(--white-two);
+}
+
+#icon-see-more{
+    background: url('../Icons/white_arrow.svg');
+    background-size: cover;
+}
+
+#see-more-button {
+    display: block;
+    border: none;
+    color: white;
+    background-color: transparent;
+    text-align: center;
+    text-decoration: none;
+    font-family: 'Oxygen';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+#download-icon {
+    margin-right: 10px;
+    width: 25px;
+    height: 25px;
+}
+
+#plan-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }

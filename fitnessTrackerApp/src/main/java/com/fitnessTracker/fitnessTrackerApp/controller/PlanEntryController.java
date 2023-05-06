@@ -16,18 +16,18 @@ public class PlanEntryController {
     private PlanEntryService planEntryService;
 
     @PostMapping("/addPlanEntry")
-    private ResponseEntity<PlanEntryDTO> addPlanEntry(@RequestBody AddPlanEntryDTO addPlanEntry) {
+    public ResponseEntity<PlanEntryDTO> addPlanEntry(@RequestBody AddPlanEntryDTO addPlanEntry) {
         return ResponseEntity.ok(planEntryService.addPlanEntry(addPlanEntry));
     }
 
     @DeleteMapping("/deletePlanEntry/{planEntryId}")
-    private ResponseEntity deletePlanEntry(@PathVariable long planEntryId) {
+    public ResponseEntity deletePlanEntry(@PathVariable long planEntryId) {
         planEntryService.deletePlanEntry(planEntryId);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/updatePlanEntry")
-    private ResponseEntity<PlanEntryDTO> updatePlanEntry(@RequestBody EditPlanEntryDTO editPlanEntry) {
+    public ResponseEntity<PlanEntryDTO> updatePlanEntry(@RequestBody EditPlanEntryDTO editPlanEntry) {
         return ResponseEntity.ok(planEntryService.updatePlanEntry(editPlanEntry));
     }
 }

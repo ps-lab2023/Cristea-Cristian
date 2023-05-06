@@ -103,10 +103,11 @@ const RegisterPage = () => {
                         formData.username,
                         formData.password
                     )
-                    localStorage.setItem("user", JSON.stringify(
+                    sessionStorage.setItem("user", JSON.stringify(
                         {
                             id: response.id,
-                            username: response.username
+                            username: response.username,
+                            role: response.role
                         }))
                     navigate("/home")
                 }

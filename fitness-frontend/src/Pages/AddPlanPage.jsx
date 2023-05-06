@@ -7,7 +7,6 @@ import AddPlanDays from '../Components/AddPlanDays'
 import EditWorkoutPlanApi from '../Api/EditWorkoutPlanApi'
 import { useNavigate, useParams } from 'react-router-dom'
 import GetWorkoutPlanApi from '../Api/GetWorkoutPlanApi'
-import DeleteWorkoutPlanApi from '../Api/DeleteWorkoutPlanApi'
 
 const AddPlanPage = () => {
 
@@ -85,7 +84,7 @@ const AddPlanPage = () => {
             if(validateFormData()) 
             {
                 const response = await AddWorkoutPlanApi(
-                    (JSON.parse(localStorage.getItem("user"))).id,
+                    (JSON.parse(sessionStorage.getItem("user"))).id,
                     detailsFormData.name,
                     activityTypes.indexOf(detailsFormData.mainActivity),
                     levels.indexOf(detailsFormData.level),

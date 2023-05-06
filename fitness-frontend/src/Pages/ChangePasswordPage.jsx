@@ -5,8 +5,9 @@ import LeftSidePhoto from '../Components/LeftSidePhoto';
 import Input from '../Components/Input';
 import Button from '../Components/Button';
 import ChangePasswordApi from '../Api/ChangePasswordApi';
+import LogInApi from '../Api/LogInApi';
 
-const TrainerChangePasswordPage = () => {
+const ChangePasswordPage = () => {
     const [formData, setFormData] = useState({
         password: '',
         confirmPassword: ''
@@ -58,10 +59,13 @@ const TrainerChangePasswordPage = () => {
                 setErrorMessage("The password does not meet complexity requirements!")
             } else {
                 await ChangePasswordApi(
-                    (JSON.parse(localStorage.getItem("user"))).id,
+                    (JSON.parse(sessionStorage.getItem("user"))).id,
                     formData.password
                 )
-                navigate('/trainer-plans')
+                if((JSON.parse(sessionStorage.getItem("user"))).role == 'TRAINER')
+                    navigate('/trainer-plans')
+                else
+                    navigate('/home')
             }
         }
     }
@@ -101,4 +105,4 @@ const TrainerChangePasswordPage = () => {
     )
 }
 
-export default TrainerChangePasswordPage
+export default ChangePasswordPage

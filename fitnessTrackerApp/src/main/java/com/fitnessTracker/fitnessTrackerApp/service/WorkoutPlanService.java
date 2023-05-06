@@ -11,4 +11,6 @@ public interface WorkoutPlanService {
     void deleteWorkoutPlan(long id);
     WorkoutPlanDTO updateWorkoutPlan(EditWorkoutPlanDTO editWorkoutPlanDTO);
     List<PlanDaySummaryDTO> getWorkoutPlanDays(long id);
+    List<WorkoutPlanWithTrainerDTO> getNewWorkoutPlans(long id);
+    WorkoutPlanDTO getWorkoutPlan(long id);
 }

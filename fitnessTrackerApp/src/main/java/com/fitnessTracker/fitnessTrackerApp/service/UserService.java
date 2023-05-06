@@ -2,7 +2,6 @@ package com.fitnessTracker.fitnessTrackerApp.service;
 
 import com.fitnessTracker.fitnessTrackerApp.dataTransferObject.*;
 import com.fitnessTracker.fitnessTrackerApp.enums.UserRoleEnum;
-import com.fitnessTracker.fitnessTrackerApp.model.User;
 
 import java.util.List;
 
@@ -16,4 +15,9 @@ public interface UserService {
     List<UserDTO> getAllUsers();
     List<UserDTO> getAllTrainers();
     void changePassword(ChangePasswordDTO changePassword);
+    void sendEmail(String email);
+    UserDTO verifyCode(String email, String code);
+    void logOut(long id);
+    int getNumberOfLoggedInUsers();
+    List<UserDTO> getLoggedInUsers();
 }

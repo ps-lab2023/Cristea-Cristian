@@ -30,6 +30,10 @@
     height: 600px;
 }
 
+.workout-records-home::-webkit-scrollbar{
+    width: 15px;
+}
+
 .filter-title{
     font-family: 'Oxygen';
     font-style: normal;

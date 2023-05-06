@@ -1,6 +1,10 @@
 package com.fitnessTracker.fitnessTrackerApp.service.impl;
 
 import com.fitnessTracker.fitnessTrackerApp.dataTransferObject.*;
+import com.fitnessTracker.fitnessTrackerApp.exceptions.IncorrectVerificationCodeException;
+import com.fitnessTracker.fitnessTrackerApp.model.VerificationCode;
+import com.fitnessTracker.fitnessTrackerApp.repository.VerificationCodeRepository;
+import com.fitnessTracker.fitnessTrackerApp.service.EmailService;
 import com.fitnessTracker.fitnessTrackerApp.util.PasswordHasher;
 import com.fitnessTracker.fitnessTrackerApp.util.Utils;
 import com.fitnessTracker.fitnessTrackerApp.enums.UserRoleEnum;
@@ -11,18 +15,24 @@ import com.fitnessTracker.fitnessTrackerApp.repository.UserRepository;
 import com.fitnessTracker.fitnessTrackerApp.service.UserService;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final VerificationCodeRepository verificationCodeRepository;
+    @Autowired
+    private EmailService emailService;
 
-    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper) {
+    public UserServiceImpl(UserRepository userRepository, VerificationCodeRepository verificationCodeRepository,ModelMapper modelMapper) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
+        this.verificationCodeRepository = verificationCodeRepository;
     }
 
     @Override
@@ -86,6 +96,8 @@ public class UserServiceImpl implements UserService {
         if(user == null) {
             throw new UserNotFoundException("Invalid credentials");
         }
+        user.setLoggedIn(true);
+        userRepository.save(user);
         return modelMapper.map(user, UserDTO.class);
     }
 
@@ -123,6 +135,68 @@ public class UserServiceImpl implements UserService {
         String hashedPassword = PasswordHasher.hashPassword(changePassword.getPassword());
         user.setPassword(hashedPassword);
         user.setChangedPassword(true);
+        user.setLoggedIn(true);
         userRepository.save(user);
+    }
+
+    @Override
+    public void sendEmail(String email) {
+        User user = userRepository.findByEmail(email);
+        if(user == null) {
+            throw new UserNotFoundException("Invalid email");
+        }
+        String generatedCode = Utils.generatePassword(5);
+        VerificationCode verificationCode = user.getVerificationCode();
+        if(verificationCode == null) {
+            verificationCode = VerificationCode.builder()
+                    .code(generatedCode)
+                    .user(user)
+                    .build();
+        }
+        else {
+            verificationCode.setCode(generatedCode);
+        }
+        verificationCodeRepository.save(verificationCode);
+        emailService.sendEmail(email, generatedCode);
+    }
+
+    @Override
+    public UserDTO verifyCode(String email, String code) {
+        User user = userRepository.findByEmail(email);
+        if(user == null) {
+            throw new UserNotFoundException("Invalid email");
+        }
+        VerificationCode verificationCode = verificationCodeRepository.findByUserAndCode(user, code);
+        if(verificationCode == null) {
+            throw new IncorrectVerificationCodeException("The code is incorrect");
+        }
+        verificationCodeRepository.delete(verificationCode);
+        return modelMapper.map(user, UserDTO.class);
+    }
+
+    @Override
+    public void logOut(long id) {
+        User user = userRepository.findById(id).orElse(null);
+        if(user == null) {
+            throw new UserNotFoundException("User with id " + id + " not found");
+        }
+        user.setLoggedIn(false);
+        userRepository.save(user);
+    }
+
+    @Override
+    public int getNumberOfLoggedInUsers(){
+        return userRepository.findAll().stream()
+                .filter(User::isLoggedIn)
+                .toList()
+                .size();
+    }
+
+    @Override
+    public List<UserDTO> getLoggedInUsers() {
+        return userRepository.findAll().stream()
+                .filter(User::isLoggedIn)
+                .map(u -> modelMapper.map(u, UserDTO.class))
+                .toList();
     }
 }

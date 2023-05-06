@@ -16,33 +16,43 @@ public class WorkoutPlanController {
     private WorkoutPlanService workoutPlanService;
 
     @PostMapping("/addWorkoutPlan")
-    private ResponseEntity<WorkoutPlanDTO> addWorkoutPlan(@RequestBody AddWorkoutPlanDTO addWorkoutPlan) {
+    public ResponseEntity<WorkoutPlanDTO> addWorkoutPlan(@RequestBody AddWorkoutPlanDTO addWorkoutPlan) {
         return ResponseEntity.ok(workoutPlanService.addWorkoutPlan(addWorkoutPlan));
     }
 
     @PutMapping("/updateWorkoutPlan")
-    private ResponseEntity<WorkoutPlanDTO> updateWorkoutPlan(@RequestBody EditWorkoutPlanDTO editWorkoutPlan) {
+    public ResponseEntity<WorkoutPlanDTO> updateWorkoutPlan(@RequestBody EditWorkoutPlanDTO editWorkoutPlan) {
         return ResponseEntity.ok(workoutPlanService.updateWorkoutPlan(editWorkoutPlan));
     }
 
     @GetMapping("/getWorkoutPlanDays/{workoutPlanId}")
-    private ResponseEntity<List<PlanDaySummaryDTO>> getWorkoutPlanDays(@PathVariable long workoutPlanId) {
+    public ResponseEntity<List<PlanDaySummaryDTO>> getWorkoutPlanDays(@PathVariable long workoutPlanId) {
         return ResponseEntity.ok(workoutPlanService.getWorkoutPlanDays(workoutPlanId));
     }
 
     @GetMapping("/getByTrainerId/{trainerId}")
-    private ResponseEntity<List<WorkoutPlanSummaryDTO>> getWorkoutPlansByUserId(@PathVariable long trainerId) {
+    public ResponseEntity<List<WorkoutPlanSummaryDTO>> getWorkoutPlansByUserId(@PathVariable long trainerId) {
         return ResponseEntity.ok(workoutPlanService.getWorkoutPlansByTrainerId(trainerId));
     }
 
     @GetMapping("/getWorkoutPlan/{workoutPlanId}")
-    private ResponseEntity<WorkoutPlanSummaryDTO> getWorkoutPlanById(@PathVariable long workoutPlanId) {
+    public ResponseEntity<WorkoutPlanSummaryDTO> getWorkoutPlanById(@PathVariable long workoutPlanId) {
         return ResponseEntity.ok(workoutPlanService.getWorkoutPlanById((workoutPlanId)));
     }
 
+    @GetMapping("/getNewWorkoutPlans/{userId}")
+    public ResponseEntity<List<WorkoutPlanWithTrainerDTO>> getAllWorkoutPlans(@PathVariable long userId) {
+        return ResponseEntity.ok(workoutPlanService.getNewWorkoutPlans(userId));
+    }
+
     @DeleteMapping("/deleteWorkoutPlan/{workoutPlanId}")
-    private ResponseEntity deleteWorkoutPlan(@PathVariable long workoutPlanId) {
+    public ResponseEntity deleteWorkoutPlan(@PathVariable long workoutPlanId) {
         workoutPlanService.deleteWorkoutPlan(workoutPlanId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value="/getWorkoutPlanXML/{workoutPlanId}", produces = { "application/xml", "text/xml"})
+    public ResponseEntity<WorkoutPlanDTO> getWorkoutPlanXML(@PathVariable long workoutPlanId) {
+        return ResponseEntity.ok(workoutPlanService.getWorkoutPlan(workoutPlanId));
     }
 }

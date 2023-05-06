@@ -1,0 +1,32 @@
+#plan-entry-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: var(--white-one);
+    padding: 7px;
+    padding-left: 20px;
+    width: 600px;
+    border-radius: 10px;
+    gap: 4px;
+}
+
+#plan-entry-title-container{
+    display: flex;
+    flex-direction: row;
+    width: 600px;
+    justify-content: space-between;
+}
+
+.plan-entry-info-header{
+    font-family: 'Oxygen', sans-serif;
+    font-style: normal;
+    font-weight: 550;
+    font-size: 15px;
+    color: rgb(78, 77, 77);
+    margin: 0;
+}
+
+.plan-entry-info > span {
+    font-weight: 550;
+    color: (--green-two);
+}

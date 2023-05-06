@@ -2,7 +2,7 @@ import React from 'react'
 import { Navigate } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }) => {
-    if (!localStorage.getItem("user")) {
+    if (!sessionStorage.getItem("user")) {
         return <Navigate to="/" />;
     }
     return children;

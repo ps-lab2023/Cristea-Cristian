@@ -7,6 +7,7 @@ import com.fitnessTracker.fitnessTrackerApp.enums.LevelEnum;
 import com.fitnessTracker.fitnessTrackerApp.enums.UserRoleEnum;
 import com.fitnessTracker.fitnessTrackerApp.model.User;
 import com.fitnessTracker.fitnessTrackerApp.model.WorkoutPlan;
+import com.fitnessTracker.fitnessTrackerApp.repository.UserPlanRepository;
 import com.fitnessTracker.fitnessTrackerApp.repository.UserRepository;
 import com.fitnessTracker.fitnessTrackerApp.repository.WorkoutPlanRepository;
 import com.fitnessTracker.fitnessTrackerApp.service.impl.WorkoutPlanServiceImpl;
@@ -33,6 +34,9 @@ public class WorkoutPlanServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private UserPlanRepository userPlanRepository;
 
     private ModelMapper modelMapper;
 

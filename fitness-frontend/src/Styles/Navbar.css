@@ -24,21 +24,15 @@
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
-.person-icon {
-    width: 30px;
-    height: 30px;
-    margin-left: 10px;
-    margin-top: 5px;
-    margin-right: 10px;
-}
-
 nav li {
     display: inline-block;
 }
 
-nav li a {
+nav li button {
     display: block;
+    border: none;
     color: white;
+    background-color: transparent;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
@@ -48,6 +42,6 @@ nav li a {
     font-size: 20px;
 }
 
-nav li a:hover {
+nav li button:hover {
     background-color: var(--gray-one);
 }

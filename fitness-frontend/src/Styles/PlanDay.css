@@ -1,0 +1,6 @@
+#plan-day-container{
+    background-color: var(--white-two);
+    width: 700px;
+    border-radius: 10px;
+    padding: 10px;
+}

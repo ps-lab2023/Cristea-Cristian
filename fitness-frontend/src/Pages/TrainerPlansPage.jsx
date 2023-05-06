@@ -5,12 +5,13 @@ import WorkoutPlanOverview from '../Components/WorkoutPlanOverview'
 import GetTrainerWorkoutPlansApi from '../Api/GetTrainerWorkoutPlansApi'
 import uuid from '../Utils/key'
 import { useNavigate } from 'react-router-dom'
+import LogOutApi from '../Api/LogOutApi'
 
 const TrainerPlansPage = () => {
   const [workoutPlans, setWorkoutPlans] = useState([])
 
   const getWorkoutPlans = async () => {
-    const trainerId = (JSON.parse(localStorage.getItem("user"))).id;
+    const trainerId = (JSON.parse(sessionStorage.getItem("user"))).id;
     const response = await GetTrainerWorkoutPlansApi(trainerId);
     setWorkoutPlans(response);
   }
@@ -25,8 +26,8 @@ const TrainerPlansPage = () => {
             {
                 pairs.map( p =>
                     <div id="plans-pair" key={uuid()}>
-                        {p[0] != undefined && <WorkoutPlanOverview workoutPlanInfo={p[0]} getWorkoutPlans={getWorkoutPlans}/>}
-                        {p[1] != undefined && <WorkoutPlanOverview workoutPlanInfo={p[1]} getWorkoutPlans={getWorkoutPlans}/>}
+                        {p[0] !== undefined && <WorkoutPlanOverview workoutPlanInfo={p[0]} getWorkoutPlans={getWorkoutPlans} isTrainer={true}/>}
+                        {p[1] !== undefined && <WorkoutPlanOverview workoutPlanInfo={p[1]} getWorkoutPlans={getWorkoutPlans} isTrainer={true}/>}
                     </div>
                 )
             }
@@ -36,17 +37,18 @@ const TrainerPlansPage = () => {
 
   const navigate = useNavigate()
 
-  const logOutFunction = () => {
-    localStorage.clear()
+  const logOutFunction = async () => {
+    await LogOutApi((JSON.parse(sessionStorage.getItem("user"))).id);
+    sessionStorage.clear()
     navigate("/")
   }
 
   const newPlanFunction = () => {
-    navigate("/plan")
+    navigate("/add-plan")
   }
 
   useEffect(() => {
-    getWorkoutPlans()
+    getWorkoutPlans();
   }, [])
 
   return (
